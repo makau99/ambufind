@@ -3,7 +3,7 @@ import { supabase } from "../services/supabase";
 import { getProfile } from "../services/profileService";
 import { getPatient } from "../services/patientService";
 
-const AuthContext = createContext();
+const authContext = createContext();
 
 export function AuthProvider({ children }) {
 
@@ -72,7 +72,7 @@ export function AuthProvider({ children }) {
 
     return (
 
-        <AuthContext.Provider
+        <authContext.Provider
             value={{
                 user,
                 profile,
@@ -83,14 +83,16 @@ export function AuthProvider({ children }) {
 
             {children}
 
-        </AuthContext.Provider>
+        </authContext.Provider>
 
     );
 
 }
 
 export function useAuth() {
+    const context = useContext(authContext);
 
-    return useContext(AuthContext);
+    console.log("AUTH CONTEXT:", context);
 
+    return context;
 }
