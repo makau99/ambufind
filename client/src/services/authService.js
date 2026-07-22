@@ -9,6 +9,7 @@ export async function register(formData) {
         password
     } = formData;
 
+    // Create authentication account
     const { data, error } = await supabase.auth.signUp({
         email,
         password
@@ -18,6 +19,7 @@ export async function register(formData) {
         return { error };
     }
 
+    // Create profile
     const { error: profileError } = await supabase
         .from("profiles")
         .insert({
@@ -31,7 +33,19 @@ export async function register(formData) {
         return { error: profileError };
     }
 
+    // Create patient record
+    const { error: patientError } = await supabase
+        .from("patients")
+        .insert({
+            profile_id: data.user.id
+        });
+
+    if (patientError) {
+        return { error: patientError };
+    }
+
     return { data };
+
 }
 
 export async function login(email, password) {
