@@ -1,14 +1,14 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-export default function Request(){
+export default function Request() {
 
-    return(
+    return (
 
         <DashboardLayout>
 
-            <h1>
+            <h1 className="text-3xl font-bold mb-8">
 
-                Request Ambulance
+                Request an Ambulance
 
             </h1>
 
