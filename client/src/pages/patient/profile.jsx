@@ -1,6 +1,6 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-export default function History(){
+export default function Profile(){
 
     return(
 
@@ -8,7 +8,7 @@ export default function History(){
 
             <h1>
 
-                Request History
+                User Profile
 
             </h1>
 
