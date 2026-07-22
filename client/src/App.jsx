@@ -5,9 +5,13 @@ import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
 
 import PatientDashboard from "./pages/patient/dashboard";
+import Request from "./pages/patient/request";
+import History from "./pages/patient/history";
+import Profile from "./pages/patient/profile";
 import DispatcherDashboard from "./pages/dispatcher/dashboard";
 import DriverDashboard from "./pages/driver/dashboard";
 import AdminDashboard from "./pages/admin/dashboard";
+
 
 import ProtectedRoute from "./components/protectedRoute";
 
@@ -39,6 +43,33 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/patient/request"
+          element={
+              <ProtectedRoute role="patient">
+                  <Request />
+              </ProtectedRoute>
+          }
+      />
+
+      <Route
+          path="/patient/history"
+          element={
+              <ProtectedRoute role="patient">
+                  <History />
+              </ProtectedRoute>
+          }
+      />
+
+      <Route
+          path="/patient/profile"
+          element={
+              <ProtectedRoute role="patient">
+                  <Profile />
+              </ProtectedRoute>
+          }
+/>
 
         <Route
           path="/driver"
