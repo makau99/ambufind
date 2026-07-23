@@ -1,9 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Landing from "./pages/landing";
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
-
 import PatientDashboard from "./pages/patient/dashboard";
 import Request from "./pages/patient/request";
 import History from "./pages/patient/history";
@@ -11,9 +9,9 @@ import Profile from "./pages/patient/profile";
 import DispatcherDashboard from "./pages/dispatcher/dashboard";
 import DriverDashboard from "./pages/driver/dashboard";
 import AdminDashboard from "./pages/admin/dashboard";
-
-
+import DispatcherRequests from "./pages/dispatcher/requests";
 import ProtectedRoute from "./components/protectedRoute";
+import AssignedRequests from "./pages/dispatcher/assigned";
 
 function App() {
   return (
@@ -88,6 +86,22 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dispatcher/requests"
+          element={
+              <ProtectedRoute role="dispatcher">
+                  <DispatcherRequests />
+              </ProtectedRoute>
+          }
+      />
+      <Route
+          path="/dispatcher/assigned"
+          element={
+              <ProtectedRoute role="dispatcher">
+                  <AssignedRequests />
+              </ProtectedRoute>
+          }
+      />
 
       </Routes>
     </BrowserRouter>

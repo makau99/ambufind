@@ -28,9 +28,17 @@ export function AuthProvider({ children }) {
 
                 setProfile(data);
 
-                const { data: patientData } = await getPatient(data.id);
+                if (data.role === "patient") {
 
-                setPatient(patientData);
+                    const { data: patientData } = await getPatient(data.id);
+
+                    setPatient(patientData);
+
+                } else {
+
+                    setPatient(null);
+
+                }
 
             }
 
@@ -52,9 +60,17 @@ export function AuthProvider({ children }) {
 
                 setProfile(data);
 
-                const { data: patientData } = await getPatient(data.id);
+                if (data.role === "patient") {
 
-                setPatient(patientData);
+                    const { data: patientData } = await getPatient(data.id);
+
+                    setPatient(patientData);
+
+                } else {
+
+                    setPatient(null);
+
+                }
 
             } else {
 
