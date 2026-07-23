@@ -1,26 +1,64 @@
+import GlassCard from "./ui/GlassCard";
+
 export default function DashboardCard({
+
     title,
+
     value,
+
+    icon,
+
     color
-}) {
 
-    return (
+}){
 
-        <div className={`${color} rounded-xl shadow text-white p-6`}>
+    return(
 
-            <h2 className="text-lg">
+        <GlassCard className="p-6">
 
-                {title}
+            <div className="flex justify-between items-center">
 
-            </h2>
+                <div>
 
-            <h1 className="text-4xl font-bold mt-3">
+                    <p className="text-gray-500">
 
-                {value}
+                        {title}
 
-            </h1>
+                    </p>
 
-        </div>
+                    <h1 className="text-4xl font-bold mt-2">
+
+                        {value}
+
+                    </h1>
+
+                </div>
+
+                <div
+
+                    className={`
+
+                        ${color}
+
+                        text-white
+
+                        p-5
+
+                        rounded-2xl
+
+                        text-2xl
+
+                    `}
+
+                >
+
+                    {icon}
+
+                </div>
+
+            </div>
+
+        </GlassCard>
 
     );
 
