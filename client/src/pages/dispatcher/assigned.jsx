@@ -145,11 +145,27 @@ export default function AssignedRequests() {
 
                                     </td>
 
-                                    <td className="px-4 py-3">
+                                    <td>
 
-                                        {request.status}
+                                        {request.status === "Assigned" && (
+                                            <span className="bg-blue-600 text-white px-3 py-1 rounded">
+                                                Assigned
+                                            </span>
+                                        )}
 
-                                    </td>
+                                        {request.status === "En Route" && (
+                                            <span className="bg-yellow-500 text-white px-3 py-1 rounded">
+                                                En Route
+                                            </span>
+                                        )}
+
+                                        {request.status === "Arrived" && (
+                                            <span className="bg-green-600 text-white px-3 py-1 rounded">
+                                                Arrived
+                                            </span>
+                                        )}
+
+                                        </td>
 
                                 </tr>
 
