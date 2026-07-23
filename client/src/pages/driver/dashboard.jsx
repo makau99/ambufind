@@ -2,37 +2,49 @@ import { useEffect, useState } from "react";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 
-import {
-
-    getCurrentTrip,
-
-    updateTripStatus,
-
-    updateAmbulanceStatus
-
-}
-
-from "../../services/driverService";
-
 import { useAuth } from "../../context/authContext";
 
-export default function DriverDashboard(){
+import {
+    getDriver,
+    getCurrentTrip,
+    updateTripStatus,
+    updateAmbulanceStatus,
+    updateDriverStatus
+} from "../../services/driverService";
+
+export default function DriverDashboard() {
 
     const { profile } = useAuth();
 
-    const [trip,setTrip]=useState(null);
+    const [driver, setDriver] = useState(null);
 
-    const [loading,setLoading]=useState(true);
+    const [trip, setTrip] = useState(null);
 
-    useEffect(()=>{
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
 
         loadTrip();
 
-    },[]);
+    }, []);
 
-    async function loadTrip(){
+    async function loadTrip() {
 
-        const {data}=await getCurrentTrip(profile.id);
+        if (!profile) return;
+
+        const { data: driverData } = await getDriver(profile.id);
+
+        if (!driverData) {
+
+            setLoading(false);
+
+            return;
+
+        }
+
+        setDriver(driverData);
+
+        const { data } = await getCurrentTrip(driverData.id);
 
         setTrip(data);
 
@@ -40,21 +52,35 @@ export default function DriverDashboard(){
 
     }
 
-    async function changeStatus(status){
+    async function changeStatus(status) {
 
-        await updateTripStatus(
+        await updateTripStatus(trip.id, status);
 
-            trip.id,
-
-            status
-
-        );
-
-        if(status==="Completed"){
+        if (status === "En Route") {
 
             await updateAmbulanceStatus(
 
                 trip.ambulance_id,
+
+                "On Trip"
+
+            );
+
+        }
+
+        if (status === "Completed") {
+
+            await updateAmbulanceStatus(
+
+                trip.ambulance_id,
+
+                "Available"
+
+            );
+
+            await updateDriverStatus(
+
+                driver.id,
 
                 "Available"
 
@@ -66,13 +92,13 @@ export default function DriverDashboard(){
 
     }
 
-    if(loading){
+    if (loading) {
 
-        return(
+        return (
 
             <DashboardLayout>
 
-                Loading...
+                <h2>Loading...</h2>
 
             </DashboardLayout>
 
@@ -80,7 +106,7 @@ export default function DriverDashboard(){
 
     }
 
-    return(
+    return (
 
         <DashboardLayout>
 
@@ -90,115 +116,203 @@ export default function DriverDashboard(){
 
             </h1>
 
-            {!trip ? (
-
-                <div className="bg-white rounded-xl shadow p-6">
-
-                    No current assignment.
-
-                </div>
-
-            ) : (
+            {!trip && (
 
                 <div className="bg-white rounded-xl shadow p-8">
 
-                    <h2 className="text-2xl font-semibold">
+                    <h2 className="text-2xl font-bold text-green-700">
 
-                        Current Trip
+                        No Active Trip
 
                     </h2>
 
-                    <p>
+                    <p className="mt-3">
 
-                        <strong>Patient:</strong>
-
-                        {" "}
-
-                        {trip.patients?.profiles?.full_name}
+                        Waiting for dispatcher assignment.
 
                     </p>
 
-                    <p>
+                </div>
 
-                        <strong>Hospital:</strong>
+            )}
 
-                        {" "}
+            {trip && (
 
-                        {trip.hospitals?.name}
+                <>
 
-                    </p>
+                    <div className="bg-white rounded-xl shadow p-8">
 
-                    <p>
+                        <h2 className="text-2xl font-bold mb-6">
 
-                        <strong>Emergency:</strong>
+                            Current Trip
 
-                        {" "}
+                        </h2>
 
-                        {trip.emergency_type}
+                        <div className="grid md:grid-cols-2 gap-8">
 
-                    </p>
+                            <div>
 
-                    <p>
+                                <p>
 
-                        <strong>Pickup:</strong>
+                                    <strong>Patient</strong>
 
-                        {" "}
+                                </p>
 
-                        {trip.pickup_address}
+                                <p>
 
-                    </p>
+                                    {trip.patients.profiles.full_name}
 
-                    <p>
+                                </p>
 
-                        <strong>Status:</strong>
+                            </div>
 
-                        {" "}
+                            <div>
 
-                        {trip.status}
+                                <p>
 
-                    </p>
+                                    <strong>Phone</strong>
 
-                    <div className="flex gap-4 mt-8">
+                                </p>
 
-                        <button
+                                <p>
 
-                            onClick={()=>changeStatus("En Route")}
+                                    {trip.patients.profiles.phone}
 
-                            className="bg-blue-700 text-white px-4 py-2 rounded"
+                                </p>
 
-                        >
+                            </div>
 
-                            Start Trip
+                            <div>
 
-                        </button>
+                                <p>
 
-                        <button
+                                    <strong>Hospital</strong>
 
-                            onClick={()=>changeStatus("Arrived")}
+                                </p>
 
-                            className="bg-yellow-600 text-white px-4 py-2 rounded"
+                                <p>
 
-                        >
+                                    {trip.hospitals.name}
 
-                            Arrived
+                                </p>
 
-                        </button>
+                            </div>
 
-                        <button
+                            <div>
 
-                            onClick={()=>changeStatus("Completed")}
+                                <p>
 
-                            className="bg-green-700 text-white px-4 py-2 rounded"
+                                    <strong>Emergency</strong>
 
-                        >
+                                </p>
 
-                            Complete
+                                <p>
 
-                        </button>
+                                    {trip.emergency_type}
+
+                                </p>
+
+                            </div>
+
+                            <div className="md:col-span-2">
+
+                                <p>
+
+                                    <strong>Pickup Address</strong>
+
+                                </p>
+
+                                <p>
+
+                                    {trip.pickup_address}
+
+                                </p>
+
+                            </div>
+
+                            <div>
+
+                                <p>
+
+                                    <strong>Status</strong>
+
+                                </p>
+
+                                <p className="font-bold text-red-700">
+
+                                    {trip.status}
+
+                                </p>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                </div>
+                    <div className="mt-8 flex gap-4">
+
+                        {trip.status === "Assigned" && (
+
+                            <button
+
+                                onClick={() => changeStatus("En Route")}
+
+                                className="bg-blue-700 text-white px-6 py-3 rounded-lg"
+
+                            >
+
+                                Start Trip
+
+                            </button>
+
+                        )}
+
+                        {trip.status === "En Route" && (
+
+                            <button
+
+                                onClick={() => changeStatus("Arrived")}
+
+                                className="bg-yellow-600 text-white px-6 py-3 rounded-lg"
+
+                            >
+
+                                Arrived
+
+                            </button>
+
+                        )}
+
+                        {trip.status === "Arrived" && (
+
+                            <button
+
+                                onClick={() => changeStatus("Completed")}
+
+                                className="bg-green-700 text-white px-6 py-3 rounded-lg"
+
+                            >
+
+                                Complete Trip
+
+                            </button>
+
+                        )}
+
+                        {trip.status === "Completed" && (
+
+                            <div className="bg-green-100 text-green-800 rounded-lg px-6 py-4">
+
+                                ✔ Trip Completed Successfully
+
+                            </div>
+
+                        )}
+
+                    </div>
+
+                </>
 
             )}
 

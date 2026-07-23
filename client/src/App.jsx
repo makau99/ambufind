@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/admin/dashboard";
 import DispatcherRequests from "./pages/dispatcher/requests";
 import ProtectedRoute from "./components/protectedRoute";
 import AssignedRequests from "./pages/dispatcher/assigned";
+import DriverHistory from "./pages/driver/history";
 
 function App() {
   return (
@@ -102,6 +103,22 @@ function App() {
               </ProtectedRoute>
           }
       />
+
+      <Route
+
+        path="/driver/history"
+
+        element={
+
+            <ProtectedRoute role="driver">
+
+                <DriverHistory/>
+
+            </ProtectedRoute>
+
+        }
+
+    />
 
       </Routes>
     </BrowserRouter>
