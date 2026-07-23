@@ -15,8 +15,16 @@ export default function Login() {
     async function handleSubmit(e) {
 
         e.preventDefault();
+        const { data, error } = await login(email, password);
 
+            if (error) {
+
+                alert(error.message);
+                return;
+
+            }
         const { data: profile } = await getProfile(data.user.id);
+        console.log(profile);
         switch (profile.role) {
 
         case "patient":
@@ -38,19 +46,6 @@ export default function Login() {
         default:
             navigate("/");
     }
-
-        if (error) {
-
-            alert(error.message);
-
-            return;
-
-        }
-
-        console.log(data);
-
-        navigate("/patient");
-
     }
 
     return (
