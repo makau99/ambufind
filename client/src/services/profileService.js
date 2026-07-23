@@ -2,12 +2,21 @@ import { supabase } from "./supabase";
 
 export async function getProfile(userId) {
 
-    const { data, error } = await supabase
+    return await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .single();
 
-    return { data, error };
+}
+
+export async function updateProfile(profileId, profileData) {
+
+    return await supabase
+        .from("profiles")
+        .update(profileData)
+        .eq("id", profileId)
+        .select()
+        .single();
 
 }
