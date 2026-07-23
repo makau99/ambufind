@@ -2,16 +2,21 @@ import { supabase } from "./supabase";
 
 export async function getPatient(profileId) {
 
-    const { data, error } = await supabase
-
+    return await supabase
         .from("patients")
-
         .select("*")
-
         .eq("profile_id", profileId)
-
         .single();
 
-    return { data, error };
+}
+
+export async function updatePatient(patientId, patientData) {
+
+    return await supabase
+        .from("patients")
+        .update(patientData)
+        .eq("id", patientId)
+        .select()
+        .single();
 
 }
