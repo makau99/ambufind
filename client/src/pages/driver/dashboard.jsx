@@ -62,6 +62,56 @@ L.Icon.Default.mergeOptions({
 
 });
 
+const blueMarker = new L.Icon({
+
+    iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+
+    shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+
+    iconSize:[25,41],
+
+    iconAnchor:[12,41],
+
+    popupAnchor:[1,-34]
+
+});
+
+
+const orangeMarker = new L.Icon({
+
+    iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+
+    shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+
+    iconSize:[25,41],
+
+    iconAnchor:[12,41],
+
+    popupAnchor:[1,-34]
+
+});
+
+
+const greenMarker = new L.Icon({
+
+    iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+
+    shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+
+    iconSize:[25,41],
+
+    iconAnchor:[12,41],
+
+    popupAnchor:[1,-34]
+
+});
+
 
 
 
@@ -165,16 +215,16 @@ driverData.id
 
 if(data){
 
+    setTrip(data);
 
-setTrip(data);
+    setAmbulance(data.ambulances);
 
+}
+else{
 
-setAmbulance(
+    setTrip(null);
 
-data.ambulances
-
-);
-
+    setAmbulance(null);
 
 }
 
@@ -505,45 +555,36 @@ CHANGE TRIP STATUS
 async function changeStatus(status){
 
 
-
-if(!trip)
-return;
-
+    if(!trip)
+        return;
 
 
 
+    await updateTripStatus(
 
-await updateTripStatus(
+        trip.id,
 
-trip.id,
+        status
 
-status
-
-);
+    );
 
 
 
 
 
+    if(status==="En Route"){
 
 
-if(
-status==="En Route"
-){
+        await updateAmbulanceStatus(
+
+            ambulance.id,
+
+            "On Trip"
+
+        );
 
 
-
-await updateAmbulanceStatus(
-
-ambulance.id,
-
-"On Trip"
-
-);
-
-
-
-}
+    }
 
 
 
@@ -551,44 +592,53 @@ ambulance.id,
 
 
 
-
-if(
-status==="Completed"
-){
+    if(status==="Completed"){
 
 
 
-await updateAmbulanceStatus(
+        await updateAmbulanceStatus(
 
-ambulance.id,
+            ambulance.id,
 
-"Available"
+            "Available"
 
-);
-
-
+        );
 
 
 
-await updateDriverStatus(
+        await updateDriverStatus(
 
-driver.id,
+            driver.id,
 
-"Available"
+            "Available"
 
-);
-
-
-
-}
+        );
 
 
 
+        // Immediately update UI
+
+        setTrip(null);
+
+        setAmbulance(null);
+
+        setRoute(null);
+
+        setDriverPosition(null);
+
+
+        return;
+
+
+    }
 
 
 
 
-loadTrip();
+
+    // Reload active trip for other statuses
+
+    await loadTrip();
 
 
 
@@ -1138,8 +1188,33 @@ driverPosition && (
 
 position={driverPosition}
 
->
 
+icon={
+
+trip.status === "Arrived"
+
+?
+
+orangeMarker
+
+
+:
+
+trip.status === "Completed"
+
+?
+
+greenMarker
+
+
+:
+
+blueMarker
+
+}
+
+
+>
 
 <Popup>
 
