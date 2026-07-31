@@ -34,8 +34,6 @@ export async function getAmbulances() {
             *,
             drivers(
                 id,
-                latitude,
-                longitude,
                 status,
                 profiles(
                     full_name
@@ -92,8 +90,6 @@ export async function getAssignedRequests() {
                 registration_number,
                 status,
                 drivers(
-                    latitude,
-                    longitude,
                     profiles(
                         full_name
                     )

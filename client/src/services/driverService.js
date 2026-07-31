@@ -16,7 +16,6 @@ export async function getDriver(profileId) {
 
 export async function getCurrentTrip(driverId) {
 
-    // Find driver's ambulance
     const { data: ambulance, error } = await supabase
 
         .from("ambulances")
@@ -29,77 +28,126 @@ export async function getCurrentTrip(driverId) {
 
     if (error) {
 
-        return { data: null, error };
+        return {
+
+            data: null,
+
+            error
+
+        };
 
     }
 
-    // Find current request assigned to that ambulance
-    return await supabase
+    const request = await supabase
 
         .from("ambulance_requests")
 
         .select(`
+
             *,
-            hospitals(name),
+
+            hospitals(*),
+
             patients(
-                profile_id,
-                profiles(
-                    full_name,
-                    phone
-                )
+
+                *,
+
+                profiles(*)
+
             ),
-            ambulances(
-                registration_number
-            )
+
+            ambulances(*)
+
         `)
 
         .eq("ambulance_id", ambulance.id)
 
-        .in("status", ["Assigned", "En Route", "Arrived"])
+        .in("status", [
+
+            "Assigned",
+
+            "En Route",
+
+            "Arrived"
+
+        ])
 
         .single();
 
+    return request;
+
 }
 
-export async function updateTripStatus(requestId, status) {
-
-    const updates = { status };
-
-    if (status === "Completed") {
-        updates.completed_at = new Date().toISOString();
-    }
+export async function updateTripStatus(id,status){
 
     return await supabase
+
         .from("ambulance_requests")
-        .update(updates)
-        .eq("id", requestId);
+
+        .update({
+
+            status
+
+        })
+
+        .eq("id",id);
 
 }
 
-export async function updateAmbulanceStatus(ambulanceId, status) {
+export async function updateAmbulanceStatus(id,status){
 
     return await supabase
 
         .from("ambulances")
 
         .update({
+
             status
+
         })
 
-        .eq("id", ambulanceId);
+        .eq("id",id);
 
 }
 
-export async function updateDriverStatus(driverId, status) {
+export async function updateDriverStatus(id,status){
 
     return await supabase
 
         .from("drivers")
 
         .update({
+
             status
+
         })
 
-        .eq("id", driverId);
+        .eq("id",id);
+
+}
+
+export async function updateAmbulanceLocation(
+
+    ambulanceId,
+
+    latitude,
+
+    longitude
+
+){
+
+    return await supabase
+
+        .from("ambulances")
+
+        .update({
+
+            latitude,
+
+            longitude
+
+        })
+
+        .eq("id",ambulanceId);
 
 }
