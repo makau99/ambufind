@@ -24,7 +24,7 @@ export async function getCurrentTrip(driverId) {
 
         .eq("driver_id", driverId)
 
-        .single();
+        .maybeSingle();
 
     if (error) {
 
