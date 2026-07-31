@@ -13,6 +13,7 @@ import DispatcherRequests from "./pages/dispatcher/requests";
 import ProtectedRoute from "./components/protectedRoute";
 import AssignedRequests from "./pages/dispatcher/assigned";
 import DriverHistory from "./pages/driver/history";
+import TrackAmbulance from "./pages/patient/TrackAmbulance";
 
 function App() {
   return (
@@ -119,7 +120,20 @@ function App() {
         }
 
     />
+    <Route
+        path="/patient/TrackAmbulance"
 
+        element={
+
+            <ProtectedRoute role="patient">
+
+                <TrackAmbulance/>
+
+            </ProtectedRoute>
+
+        }
+
+    />
       </Routes>
     </BrowserRouter>
   );

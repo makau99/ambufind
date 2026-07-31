@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-
 import DashboardLayout from "../../layouts/DashboardLayout";
 import DashboardCard from "../../components/DashboardCard";
-
 import { useAuth } from "../../context/authContext";
-
 import { getDashboardStats } from "../../services/requestService";
+import { Link } from "react-router-dom";
 
 export default function PatientDashboard() {
 
@@ -117,32 +115,36 @@ export default function PatientDashboard() {
 
                 <div className="flex gap-4">
 
-                    <a
-                        href="/patient/request"
+                    <Link
+                        to="/patient/request"
                         className="bg-red-700 text-white px-5 py-3 rounded-lg"
                     >
 
                         Request Ambulance
+                    </Link>
 
-                    </a>
+                    <Link
+                        to="/patient/TrackAmbulance"
+                        className="bg-green-700 text-white px-5 py-3 rounded-lg"
+                    >
+                        Track Ambulance
+                    </Link>
 
-                    <a
-                        href="/patient/history"
+                    <Link
+                        to="/patient/history"
                         className="bg-gray-800 text-white px-5 py-3 rounded-lg"
                     >
 
                         View History
+                    </Link>
 
-                    </a>
-
-                    <a
-                        href="/patient/profile"
+                    <Link
+                        to="/patient/profile"
                         className="bg-blue-700 text-white px-5 py-3 rounded-lg"
                     >
 
                         My Profile
-
-                    </a>
+                    </Link>
 
                 </div>
 
