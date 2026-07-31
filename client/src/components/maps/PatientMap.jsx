@@ -215,6 +215,12 @@ sendLocation();
 
             />
 
+            <FollowAmbulance
+
+                position={ambulancePosition}
+                
+            />
+
             <RecenterMap position={position} />
 
             <LocationMarker

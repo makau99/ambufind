@@ -17,6 +17,49 @@ export async function updatePatient(patientId, patientData) {
         .update(patientData)
         .eq("id", patientId)
         .select()
-        .single();
+        .maybeSingle();
+
+}
+
+export async function getCurrentTrip(patientId) {
+
+    return await supabase
+
+        .from("ambulance_requests")
+
+        .select(`
+            *,
+            ambulances(
+                *,
+                drivers(
+                    *,
+                    profiles(
+                        full_name,
+                        phone
+                    )
+                )
+            ),
+            hospitals(*),
+            patients(
+                *,
+                profiles(
+                    full_name,
+                    phone
+                )
+            )
+        `)
+
+        .eq("patient_id", patientId)
+
+        .in(
+            "status",
+            [
+                "Assigned",
+                "En Route",
+                "Arrived"
+            ]
+        )
+
+        .maybeSingle();
 
 }
