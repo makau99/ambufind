@@ -27,6 +27,7 @@ function RecenterMap({ position }) {
 
 }
 
+
 function LocationMarker({ position, setPosition }) {
 
     useMapEvents({
@@ -213,12 +214,6 @@ sendLocation();
 
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
-            />
-
-            <FollowAmbulance
-
-                position={ambulancePosition}
-                
             />
 
             <RecenterMap position={position} />

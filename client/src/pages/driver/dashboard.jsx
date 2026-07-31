@@ -1245,233 +1245,75 @@ blueMarker
 
 
 
-{
+{trip.status !== "Arrived" &&
+ trip.status !== "Completed" &&
+ trip.pickup_latitude &&
+ trip.pickup_longitude && (
 
-trip.pickup_latitude &&
+    <Marker
+        position={[
+            Number(trip.pickup_latitude),
+            Number(trip.pickup_longitude)
+        ]}
+    >
+        <Popup>Patient Pickup</Popup>
+    </Marker>
 
-trip.pickup_longitude && (
-
-
-
-<Marker
-
-
-
-position={[
-
-Number(
-trip.pickup_latitude
-),
-
-Number(
-trip.pickup_longitude
-)
-
-]}
-
-
-
->
-
-
-<Popup>
-
-Patient Pickup
-
-</Popup>
-
-
-
-</Marker>
-
-
-
-)
-
-
-}
-
-
-
-
-
-
-
-
+)}
 
 {/* HOSPITAL */}
+{trip.status !== "Completed" &&
+ trip.hospitals.latitude &&
+ trip.hospitals.longitude && (
 
+    <Marker
+        position={[
+            Number(trip.hospitals.latitude),
+            Number(trip.hospitals.longitude)
+        ]}
+    >
+        <Popup>{trip.hospitals.name}</Popup>
+    </Marker>
 
-
-
-{
-
-trip.hospitals.latitude &&
-
-trip.hospitals.longitude && (
-
-
-
-
-<Marker
-
-
-
-position={[
-
-Number(
-trip.hospitals.latitude
-),
-
-Number(
-trip.hospitals.longitude
-)
-
-]}
-
-
-
->
-
-
-<Popup>
-
-{
-
-trip.hospitals.name
-
-}
-
-
-</Popup>
-
-
-
-</Marker>
-
-
-
-)
-
-
-}
-
-
-
-
-
-
-
-
-
+)}
 {/* BLUE ROUTE */}
 
-
-
 {
-
 route && route.coordinates && (
 
-
-
 <Polyline
-
-
-
 positions={
-
 route.coordinates
-
 }
-
-
-
 pathOptions={{
-
 color:"#2563eb",
-
 weight:6
-
 }}
-
-
-
 />
-
-
-
 )
-
-
-
 }
-
-
-
-
-
 </MapContainer>
-
-
-
-
-
-
 </div>
-
-
-
-
-
-
 </div>
-
-
-
-
-
-
 </div>
-
-
-
-
-
-
-
-
 
 {/* ======================
  ACTION BUTTONS
 ======================= */}
-
-
-
 
 <div className="
 flex
 gap-4
 flex-wrap
 ">
-
-
-
-
-
 {
-
-
 trip.status==="Assigned" && (
 
-
 <button
-
 
 onClick={()=>changeStatus(
 "En Route"
 )}
-
-
 
 className="
 px-8
@@ -1482,45 +1324,17 @@ text-white
 font-semibold
 hover:bg-blue-700
 "
-
-
 >
-
-
 Start Trip
-
-
 </button>
-
-
-
 )
-
-
 }
-
-
-
-
-
-
-
-
 {
-
-
 trip.status==="En Route" && (
-
-
 <button
-
-
 onClick={()=>changeStatus(
 "Arrived"
 )}
-
-
-
 className="
 px-8
 py-4
@@ -1530,45 +1344,17 @@ text-white
 font-semibold
 hover:bg-yellow-600
 "
-
-
 >
-
-
 Arrived
-
-
 </button>
-
-
-
 )
-
-
 }
-
-
-
-
-
-
-
-
 {
-
-
 trip.status==="Arrived" && (
-
-
 <button
-
-
 onClick={()=>changeStatus(
 "Completed"
 )}
-
-
-
 className="
 px-8
 py-4
@@ -1578,51 +1364,16 @@ text-white
 font-semibold
 hover:bg-green-700
 "
-
-
 >
-
-
 Complete Trip
-
-
 </button>
-
-
-
 )
-
-
 }
-
-
-
-
-
 </div>
-
-
-
-
-
-
 </>
-
-
 )
-
 }
-
-
-
-
-
-
 </div>
-
-
 </DashboardLayout>
-
 );
-
 }

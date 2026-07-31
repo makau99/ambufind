@@ -653,67 +653,41 @@ return (
 
                                         }
 
-                                        <Marker
+                                        {trip.status !== "Arrived" && (
 
-                                            position={[
+                                            <Marker
+                                                position={[
+                                                    Number(trip.pickup_latitude),
+                                                    Number(trip.pickup_longitude)
+                                                ]}
+                                            >
+                                                <Popup>
 
-                                                Number(
+                                                    📍 Pickup
 
-                                                    trip.pickup_latitude
+                                                </Popup>
 
-                                                ),
+                                            </Marker>
 
-                                                Number(
+                                        )}
 
-                                                    trip.pickup_longitude
+                                        {trip.status !== "Completed" && (
 
-                                                )
+                                            <Marker
+                                                position={[
+                                                    Number(trip.hospitals.latitude),
+                                                    Number(trip.hospitals.longitude)
+                                                ]}
+                                            >
+                                                <Popup>
 
-                                            ]}
+                                                    🏥 {trip.hospitals.name}
 
-                                        >
+                                                </Popup>
 
-                                            <Popup>
+                                            </Marker>
 
-                                                📍 Pickup
-
-                                            </Popup>
-
-                                        </Marker>
-
-                                        <Marker
-
-                                            position={[
-
-                                                Number(
-
-                                                    trip.hospitals.latitude
-
-                                                ),
-
-                                                Number(
-
-                                                    trip.hospitals.longitude
-
-                                                )
-
-                                            ]}
-
-                                        >
-
-                                            <Popup>
-
-                                                🏥
-
-                                                {
-
-                                                    trip.hospitals.name
-
-                                                }
-
-                                            </Popup>
-
-                                        </Marker>
+                                        )}
 
                                         {
 
