@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 import PatientMap from "../../components/maps/PatientMap";
@@ -68,19 +68,21 @@ export default function Request() {
 
     }
 
-    function handleLocation(location) {
+    const handleLocation = useCallback((location) => {
 
-        setFormData((prev) => ({
+        setFormData(prev => ({
 
             ...prev,
 
             pickup_latitude: location.latitude,
 
-            pickup_longitude: location.longitude
+            pickup_longitude: location.longitude,
+
+            pickup_address: location.address || prev.pickup_address || ""
 
         }));
 
-    }
+    }, []);
 
     async function handleSubmit(e) {
 
@@ -386,7 +388,7 @@ export default function Request() {
 
                                 <textarea
 
-                                    rows={5}
+                                    rows={4}
 
                                     name="pickup_address"
 
@@ -394,7 +396,7 @@ export default function Request() {
 
                                     onChange={handleChange}
 
-                                    placeholder="House number, apartment, landmark or additional directions..."
+                                    placeholder="Detecting address..."
 
                                     className="
 
@@ -406,9 +408,7 @@ export default function Request() {
 
                                         border-gray-200
 
-                                        bg-white/80
-
-                                        backdrop-blur
+                                        bg-gray-50
 
                                         px-5
 
@@ -418,17 +418,13 @@ export default function Request() {
 
                                         outline-none
 
-                                        transition-all
+                                        transition
 
-                                        duration-300
+                                        focus:bg-white
 
                                         focus:ring-4
 
                                         focus:ring-red-100
-
-                                        focus:border-red-600
-
-                                        hover:border-red-400
 
                                     "
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { reverseGeocode } from "../../services/geocodeService";
 
 import {
     MapContainer,
@@ -134,17 +135,33 @@ export default function PatientMap({ onLocationSelect }) {
 
         if (!position) return;
 
-        if (onLocationSelect) {
+        async function sendLocation() {
+
+            const address = await reverseGeocode(
+
+                position[0],
+
+                position[1]
+
+            );
 
             onLocationSelect({
 
                 latitude: position[0],
 
-                longitude: position[1]
+                longitude: position[1],
+
+                address:
+
+                    address?.display_name ||
+
+                    ""
 
             });
 
         }
+
+sendLocation();
 
     }, [position, onLocationSelect]);
 
@@ -152,9 +169,15 @@ export default function PatientMap({ onLocationSelect }) {
 
         return (
 
-            <div className="h-[450px] rounded-2xl bg-gray-100 flex items-center justify-center">
+            <div className="h-[450px] rounded-3xl bg-white shadow flex flex-col items-center justify-center">
 
-                Getting your current location...
+                <div className="w-16 h-16 border-4 border-red-200 border-t-red-700 rounded-full animate-spin"/>
+
+                <p className="mt-6 text-gray-600">
+
+                    Detecting your current location...
+
+                </p>
 
             </div>
 

@@ -4,7 +4,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 
 import {
     getPendingRequests,
-    getAvailableAmbulances,
+    getAmbulances,
     assignAmbulance
 } from "../../services/dispatcherService";
 
@@ -28,7 +28,7 @@ export default function DispatcherRequests() {
             await getPendingRequests();
 
         const { data: ambulanceData, error: ambulanceError } =
-            await getAvailableAmbulances();
+            await getAmbulances();
 
         if (requestError) {
 
