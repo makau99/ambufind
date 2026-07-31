@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 
-import L from "leaflet";
-
 import {
     MapContainer,
     TileLayer,
     Marker,
     Popup,
-    CircleMarker
+    CircleMarker,
+    Polyline
 } from "react-leaflet";
 
+import L from "leaflet";
+
+import "leaflet/dist/leaflet.css";
+
 import {
+
     getAmbulances,
     getPendingRequests,
     getHospitals
+
 } from "../../services/dispatcherService";
 
-import "leaflet/dist/leaflet.css";
+import { getRoute } from "../../services/routeService";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -33,377 +38,574 @@ L.Icon.Default.mergeOptions({
 
 });
 
-function ambulanceIcon(status) {
+function ambulanceIcon(status){
 
-    let color = "#16a34a";
+    let color="#16a34a";
 
-    switch (status) {
+    switch(status){
 
         case "Assigned":
 
-            color = "#f59e0b";
+            color="#f59e0b";
 
             break;
 
         case "On Trip":
 
-            color = "#2563eb";
+            color="#2563eb";
 
             break;
 
         case "Offline":
 
-            color = "#6b7280";
+            color="#6b7280";
 
             break;
 
         default:
 
-            color = "#16a34a";
+            color="#16a34a";
 
     }
 
     return L.divIcon({
 
-        html: `
+        className:"",
 
-            <div
-                style="
-                    width:20px;
-                    height:20px;
-                    border-radius:50%;
-                    background:${color};
-                    border:3px solid white;
-                    box-shadow:0 0 12px rgba(0,0,0,.45);
-                ">
-            </div>
+        html:`
+
+        <div
+            style="
+                width:20px;
+                height:20px;
+                border-radius:50%;
+                background:${color};
+                border:3px solid white;
+                box-shadow:0 0 10px rgba(0,0,0,.45);
+            ">
+        </div>
 
         `,
 
-        className: "",
-
-        iconSize: [20, 20]
+        iconSize:[20,20]
 
     });
 
 }
 
-const hospitalIcon = L.divIcon({
+const hospitalIcon=L.divIcon({
 
-    html: `
+    className:"",
 
-        <div
-            style="
-                width:24px;
-                height:24px;
-                border-radius:50%;
-                background:#dc2626;
-                color:white;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                font-size:14px;
-                font-weight:bold;
-                border:2px solid white;
-                box-shadow:0 0 10px rgba(0,0,0,.4);
-            "
-        >
+    html:`
 
-            🏥
+    <div
+        style="
+            width:24px;
+            height:24px;
+            border-radius:50%;
+            background:#dc2626;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:white;
+            font-size:14px;
+            border:2px solid white;
+        "
+    >
 
-        </div>
+        🏥
+
+    </div>
 
     `,
 
-    className: "",
-
-    iconSize: [24, 24]
+    iconSize:[24,24]
 
 });
 
-export default function DispatcherMap() {
+export default function DispatcherMap(){
 
-    const [ambulances, setAmbulances] = useState([]);
+    const [ambulances,setAmbulances]=useState([]);
 
-    const [requests, setRequests] = useState([]);
+    const [requests,setRequests]=useState([]);
 
-    const [hospitals, setHospitals] = useState([]);
+    const [hospitals,setHospitals]=useState([]);
 
-    async function loadMap() {
+    const [selectedAmbulance,setSelectedAmbulance]=useState(null);
 
-        const { data: ambulanceData } = await getAmbulances();
+    const [route,setRoute]=useState(null);
 
-        const { data: requestData } = await getPendingRequests();
+    async function loadMap(){
 
-        const { data: hospitalData } = await getHospitals();
+        const {data:a}=await getAmbulances();
 
-        setAmbulances(ambulanceData || []);
+        const {data:r}=await getPendingRequests();
 
-        setRequests(requestData || []);
+        const {data:h}=await getHospitals();
 
-        setHospitals(hospitalData || []);
+        setAmbulances(a||[]);
+
+        setRequests(r||[]);
+
+        setHospitals(h||[]);
 
     }
 
-    useEffect(() => {
+    useEffect(()=>{
 
         loadMap();
 
-        const interval = setInterval(loadMap, 10000);
+        const interval=setInterval(loadMap,10000);
 
-        return () => clearInterval(interval);
+        return ()=>clearInterval(interval);
 
-    }, []);
+    },[]);
+        useEffect(() => {
+
+        async function buildRoute() {
+
+            if (!selectedAmbulance) {
+
+                setRoute(null);
+
+                return;
+
+            }
+
+            const request = requests.find(
+
+                r =>
+
+                    r.ambulance_id === selectedAmbulance.id &&
+
+                    ["Assigned", "En Route", "Arrived"].includes(r.status)
+
+            );
+
+            if (!request) {
+
+                setRoute(null);
+
+                return;
+
+            }
+
+            if (
+
+                !selectedAmbulance.latitude ||
+
+                !selectedAmbulance.longitude ||
+
+                !request.pickup_latitude ||
+
+                !request.pickup_longitude
+
+            ) {
+
+                setRoute(null);
+
+                return;
+
+            }
+
+            const result = await getRoute(
+
+                {
+
+                    lat: Number(selectedAmbulance.latitude),
+
+                    lng: Number(selectedAmbulance.longitude)
+
+                },
+
+                {
+
+                    lat: Number(request.pickup_latitude),
+
+                    lng: Number(request.pickup_longitude)
+
+                }
+
+            );
+
+            setRoute(result);
+
+        }
+
+        buildRoute();
+
+    }, [selectedAmbulance, requests]);
 
     return (
 
-        <MapContainer
+        <div className="relative">
 
-            center={[-1.286389, 36.817223]}
+            <MapContainer
 
-            zoom={12}
+                center={[-1.286389, 36.817223]}
 
-            scrollWheelZoom={true}
+                zoom={12}
 
-            style={{
+                scrollWheelZoom={true}
 
-                height: "700px",
+                style={{
 
-                width: "100%",
+                    height: "700px",
 
-                borderRadius: "24px"
+                    width: "100%",
 
-            }}
+                    borderRadius: "24px"
 
-        >
+                }}
 
-            <TileLayer
+            >
 
-                attribution="© OpenStreetMap"
+                <TileLayer
 
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="© OpenStreetMap contributors"
 
-            />
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
-            {/* Hospitals */}
+                />
 
-            {
+                {/* Hospitals */}
 
-                hospitals.map(hospital => (
+                {
 
-                    hospital.latitude &&
+                    hospitals.map(hospital => (
 
-                    hospital.longitude && (
+                        hospital.latitude &&
 
-                        <Marker
+                        hospital.longitude && (
 
-                            key={hospital.id}
+                            <Marker
 
-                            icon={hospitalIcon}
+                                key={hospital.id}
 
-                            position={[
+                                icon={hospitalIcon}
 
-                                hospital.latitude,
+                                position={[
 
-                                hospital.longitude
+                                    Number(hospital.latitude),
 
-                            ]}
+                                    Number(hospital.longitude)
 
-                        >
+                                ]}
 
-                            <Popup>
+                            >
 
-                                <div className="space-y-2">
+                                <Popup>
 
-                                    <h2 className="font-bold">
+                                    <div>
 
-                                        {hospital.name}
+                                        <h3 className="font-bold">
 
-                                    </h2>
+                                            {hospital.name}
 
-                                    <p>
+                                        </h3>
 
-                                        Hospital
+                                        <p>
 
-                                    </p>
+                                            Hospital
 
-                                </div>
+                                        </p>
 
-                            </Popup>
+                                    </div>
 
-                        </Marker>
+                                </Popup>
 
-                    )
+                            </Marker>
 
-                ))
+                        )
 
-            }
+                    ))
 
-            {/* Ambulances */}
+                }
 
-            {
+                {/* Ambulances */}
 
-                ambulances.map(ambulance => (
+                {
 
-                    ambulance.drivers?.latitude &&
+                    ambulances.map(ambulance => (
 
-                    ambulance.drivers?.longitude && (
+                        ambulance.latitude &&
 
-                        <Marker
+                        ambulance.longitude && (
 
-                            key={ambulance.id}
+                            <Marker
 
-                            icon={ambulanceIcon(ambulance.status)}
+                                key={ambulance.id}
 
-                            position={[
+                                position={[
 
-                                ambulance.drivers.latitude,
+                                    Number(ambulance.latitude),
 
-                                ambulance.drivers.longitude
+                                    Number(ambulance.longitude)
 
-                            ]}
+                                ]}
 
-                        >
+                                icon={ambulanceIcon(ambulance.status)}
 
-                            <Popup>
+                                eventHandlers={{
 
-                                <div className="space-y-2">
+                                    click: () =>
 
-                                    <h2 className="font-bold">
+                                        setSelectedAmbulance(
 
-                                        {ambulance.registration_number}
+                                            ambulance
 
-                                    </h2>
+                                        )
 
-                                    <p>
+                                }}
 
-                                        Status:
+                            >
 
-                                        {" "}
+                                <Popup>
 
-                                        {ambulance.status}
+                                    <div className="space-y-2">
 
-                                    </p>
+                                        <h3 className="font-bold">
 
-                                    <p>
+                                            {ambulance.registration_number}
 
-                                        Driver:
+                                        </h3>
 
-                                        {" "}
+                                        <p>
 
-                                        {
+                                            Status:
 
-                                            ambulance.drivers.profiles.full_name
+                                            {" "}
 
-                                        }
+                                            {ambulance.status}
 
-                                    </p>
+                                        </p>
 
-                                </div>
+                                        <p>
 
-                            </Popup>
+                                            Driver:
 
-                        </Marker>
+                                            {" "}
 
-                    )
+                                            {
 
-                ))
+                                                ambulance.drivers?.profiles
 
-            }
+                                                    ?.full_name ||
 
-            {/* Emergency Requests */}
+                                                "Unassigned"
 
-            {
+                                            }
 
-                requests.map(request => (
+                                        </p>
 
-                    request.pickup_latitude &&
+                                    </div>
 
-                    request.pickup_longitude && (
+                                </Popup>
 
-                        <CircleMarker
+                            </Marker>
 
-                            key={request.id}
+                        )
 
-                            center={[
+                    ))
 
-                                request.pickup_latitude,
+                }
 
-                                request.pickup_longitude
+                {/* Emergency Requests */}
 
-                            ]}
+                {
 
-                            radius={12}
+                    requests.map(request => (
+
+                        request.pickup_latitude &&
+
+                        request.pickup_longitude && (
+
+                            <CircleMarker
+
+                                key={request.id}
+
+                                center={[
+
+                                    Number(request.pickup_latitude),
+
+                                    Number(request.pickup_longitude)
+
+                                ]}
+
+                                radius={10}
+
+                                pathOptions={{
+
+                                    color: "#dc2626",
+
+                                    fillColor: "#ef4444",
+
+                                    fillOpacity: 1
+
+                                }}
+
+                            >
+
+                                <Popup>
+
+                                    <div className="space-y-2">
+
+                                        <h3 className="font-bold">
+
+                                            Emergency Request
+
+                                        </h3>
+
+                                        <p>
+
+                                            <strong>Patient:</strong>{" "}
+
+                                            {
+
+                                                request.patients?.profiles
+
+                                                    ?.full_name
+
+                                            }
+
+                                        </p>
+
+                                        <p>
+
+                                            <strong>Emergency:</strong>{" "}
+
+                                            {request.emergency_type}
+
+                                        </p>
+
+                                        <p>
+
+                                            <strong>Status:</strong>{" "}
+
+                                            {request.status}
+
+                                        </p>
+
+                                    </div>
+
+                                </Popup>
+
+                            </CircleMarker>
+
+                        )
+
+                    ))
+
+                }
+
+                {/* Route */}
+
+                {
+
+                    route && (
+
+                        <Polyline
+
+                            positions={route.coordinates}
 
                             pathOptions={{
 
-                                color: "#dc2626",
+                                color: "#2563eb",
 
-                                fillColor: "#ef4444",
-
-                                fillOpacity: 1
+                                weight: 6
 
                             }}
 
-                        >
-
-                            <Popup>
-
-                                <div className="space-y-2">
-
-                                    <h2 className="font-bold">
-
-                                        Emergency Request
-
-                                    </h2>
-
-                                    <p>
-
-                                        <strong>Patient:</strong>
-
-                                        {" "}
-
-                                        {
-
-                                            request.patients.profiles.full_name
-
-                                        }
-
-                                    </p>
-
-                                    <p>
-
-                                        <strong>Emergency:</strong>
-
-                                        {" "}
-
-                                        {request.emergency_type}
-
-                                    </p>
-
-                                    <p>
-
-                                        <strong>Address:</strong>
-
-                                        {" "}
-
-                                        {request.pickup_address}
-
-                                    </p>
-
-                                </div>
-
-                            </Popup>
-
-                        </CircleMarker>
+                        />
 
                     )
 
-                ))
+                }
 
-            }
+            </MapContainer>
 
-        </MapContainer>
+            <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl p-5 w-64 z-[1000]">
+
+                <h2 className="font-bold text-lg mb-3">
+
+                    Map Legend
+
+                </h2>
+
+                <div className="space-y-2 text-sm">
+
+                    <div>
+
+                        🏥 Hospital
+
+                    </div>
+
+                    <div>
+
+                        🟢 Available Ambulance
+
+                    </div>
+
+                    <div>
+
+                        🟠 Assigned Ambulance
+
+                    </div>
+
+                    <div>
+
+                        🔵 On Trip
+
+                    </div>
+
+                    <div>
+
+                        🔴 Emergency Request
+
+                    </div>
+
+                </div>
+
+                {
+
+                    route && (
+
+                        <div className="mt-5 border-t pt-4">
+
+                            <p>
+
+                                <strong>Distance</strong>
+
+                            </p>
+
+                            <p>
+
+                                {route.distance} km
+
+                            </p>
+
+                            <p className="mt-2">
+
+                                <strong>ETA</strong>
+
+                            </p>
+
+                            <p>
+
+                                {route.duration} mins
+
+                            </p>
+
+                        </div>
+
+                    )
+
+                }
+
+            </div>
+
+        </div>
 
     );
 
