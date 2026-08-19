@@ -8,12 +8,16 @@ import History from "./pages/patient/history";
 import Profile from "./pages/patient/profile";
 import DispatcherDashboard from "./pages/dispatcher/dashboard";
 import DriverDashboard from "./pages/driver/dashboard";
-import AdminDashboard from "./pages/admin/dashboard";
 import DispatcherRequests from "./pages/dispatcher/requests";
 import ProtectedRoute from "./components/protectedRoute";
 import AssignedRequests from "./pages/dispatcher/assigned";
 import DriverHistory from "./pages/driver/history";
 import TrackAmbulance from "./pages/patient/TrackAmbulance";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAmbulances from "./pages/admin/AdminAmbulances";
+import AdminRequests from "./pages/admin/AdminRequests";
+import AdminReports from "./pages/admin/AdminReports";
 
 function App() {
   return (
@@ -80,13 +84,26 @@ function App() {
           }
         />
 
+        <Route path="/admin" element={<AdminDashboard />} />
+
         <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
+            path="/admin/users"
+            element={<AdminUsers />}
+        />
+
+        <Route
+            path="/admin/ambulances"
+            element={<AdminAmbulances />}
+        />
+
+        <Route
+            path="/admin/requests"
+            element={<AdminRequests />}
+        />
+
+        <Route
+            path="/admin/reports"
+            element={<AdminReports />}
         />
         <Route
           path="/dispatcher/requests"
