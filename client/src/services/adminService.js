@@ -5,32 +5,6 @@ import { supabase } from "./supabase";
 |--------------------------------------------------------------------------
 | ADMIN SERVICE
 |--------------------------------------------------------------------------
-| This service uses the existing database schema.
-|
-| No new tables are created.
-| No new columns are required.
-|
-| Existing tables used:
-| - profiles
-| - ambulances
-| - ambulance_requests
-| - patients
-| - hospitals
-| - drivers
-|
-| Existing ambulance statuses:
-| - Available
-| - Assigned
-| - On Trip
-| - Offline
-|
-| Existing request statuses:
-| - Pending
-| - Assigned
-| - En Route
-| - Arrived
-| - Completed
-|--------------------------------------------------------------------------
 */
 
 
@@ -180,12 +154,6 @@ export async function getAdminDashboardStats() {
 |--------------------------------------------------------------------------
 | GET ALL USERS
 |--------------------------------------------------------------------------
-|
-| Uses the existing profiles table.
-|
-| The profiles.role field remains the source of
-| application-level role information.
-|--------------------------------------------------------------------------
 */
 
 export async function getAllUsers() {
@@ -254,11 +222,6 @@ export async function getAllUsers() {
 /*
 |--------------------------------------------------------------------------
 | UPDATE USER ROLE
-|--------------------------------------------------------------------------
-|
-| Updates the existing role field in profiles.
-|
-| No separate role table is required.
 |--------------------------------------------------------------------------
 */
 
@@ -383,9 +346,6 @@ export async function updateUserRole(
 /*
 |--------------------------------------------------------------------------
 | GET ALL AMBULANCES
-|--------------------------------------------------------------------------
-|
-| Uses the existing ambulances table.
 |--------------------------------------------------------------------------
 */
 
@@ -576,37 +536,6 @@ export async function updateAmbulanceStatus(
 |--------------------------------------------------------------------------
 | GET ALL AMBULANCE REQUESTS
 |--------------------------------------------------------------------------
-|
-| IMPORTANT:
-|
-| The actual database schema contains:
-|
-| ambulance_requests
-| - id
-| - patient_id
-| - hospital_id
-| - ambulance_id
-| - emergency_type
-| - pickup_address
-| - pickup_latitude
-| - pickup_longitude
-| - status
-| - requested_at
-| - completed_at
-|
-| The existing AdminRequests.jsx expects:
-|
-| request.patient.full_name
-| request.patient.phone
-| request.hospital.name
-| request.ambulance.registration_number
-| request.created_at
-|
-| Therefore, this function fetches the actual database
-| fields and transforms the returned JavaScript object.
-|
-| No database columns are added or renamed.
-|--------------------------------------------------------------------------
 */
 
 export async function getAllRequests() {
@@ -709,26 +638,6 @@ export async function getAllRequests() {
 
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADAPT DATABASE RESPONSE FOR EXISTING ADMIN REQUESTS PAGE
-        |--------------------------------------------------------------------------
-        |
-        | Database names:
-        | patients
-        | hospitals
-        | ambulances
-        | requested_at
-        |
-        | Existing AdminRequests names:
-        | patient
-        | hospital
-        | ambulance
-        | created_at
-        |
-        |--------------------------------------------------------------------------
-        */
 
         const formattedRequests =
             (data || []).map(
@@ -1002,10 +911,6 @@ export async function getAllRequests() {
 /*
 |--------------------------------------------------------------------------
 | GET ADMIN REPORT DATA
-|--------------------------------------------------------------------------
-|
-| Retrieves the existing records required for
-| the Admin Reports page.
 |--------------------------------------------------------------------------
 */
 
