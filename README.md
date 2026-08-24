@@ -90,27 +90,18 @@ React Frontend
 
 ## Project Structure
 
+```text
 ambufind/
-
-│
 ├── src/
 │   ├── components/
 │   ├── context/
 │   ├── layouts/
 │   ├── pages/
-│   │   ├── admin/
-│   │   ├── dispatcher/
-│   │   ├── driver/
-│   │   └── patient/
-│   │
 │   ├── services/
-│   ├── App.jsx
-│   └── main.jsx
-│
+│   └── ...
 ├── public/
-│
+├── supabase/
 ├── package.json
-├── package-lock.json
 └── README.md
 
 ## Getting Started
