@@ -91,6 +91,7 @@ React Frontend
 ## Project Structure
 
 ambufind/
+
 │
 ├── src/
 │   ├── components/
@@ -132,8 +133,11 @@ npm install
 Create a `.env` file in the project root:
 
 VITE_SUPABASE_URL=your_supabase_project_url
+
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
 VITE_ORS_API_KEY=your_openrouteservice_api_key
 
 Do not commit `.env` files or secret API keys to the repository.
