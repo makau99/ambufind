@@ -78,6 +78,7 @@ Version Control: Git and GitHub
 
 The application consists of a React frontend connected to Supabase services for authentication and database operations. External mapping and routing services provide location visualization and route information.
 
+```text
 React Frontend
         |
         +---- Supabase Authentication
@@ -88,6 +89,7 @@ React Frontend
         |
         +---- OpenRouteService API
 
+```
 ## Project Structure
 
 ```text
@@ -103,6 +105,7 @@ ambufind/
 ├── supabase/
 ├── package.json
 └── README.md
+```
 
 ## Getting Started
 
@@ -112,17 +115,22 @@ Install Node.js, npm, and Git before setting up the project. A Supabase project 
 
 ### Clone the Repository
 
+```text
 git clone <YOUR_REPOSITORY_URL>
 cd ambufind
+```
 
 ### Install Dependencies
 
+```text
 npm install
+```
 
 ### Configure Environment Variables
 
 Create a `.env` file in the project root:
 
+```text
 VITE_SUPABASE_URL=your_supabase_project_url
 
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -130,16 +138,21 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 
 VITE_ORS_API_KEY=your_openrouteservice_api_key
+```
 
 Do not commit `.env` files or secret API keys to the repository.
 
 ### Start the Development Server
 
+```text
 npm run dev
+```
 
 The application will normally be available at:
 
+```text
 http://localhost:5173
+```
 
 ## Supabase
 
@@ -162,15 +175,21 @@ The project includes functionality for secure staff-account creation through the
 
 After installing the Supabase CLI, authenticate with:
 
+```text
 supabase login
+```
 
 Link the project:
 
+```text
 supabase link --project-ref YOUR_PROJECT_REF
+```
 
 Deploy the function:
 
+```text
 supabase functions deploy create-staff-account
+```
 
 ## User Roles
 
