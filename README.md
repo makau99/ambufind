@@ -30,7 +30,7 @@ A web-based ambulance dispatch and tracking application designed to improve emer
 
 ## 📁 Project Structure
 
-'''text
+```text
 /
 ├── src/
 │   ├── components/
@@ -52,13 +52,11 @@ A web-based ambulance dispatch and tracking application designed to improve emer
 ├── package.json
 ├── vite.config.js
 └── README.md
-'''
-
+```
 ---
 
 ## 💻 Technologies Used
 
-'''text
 | Technology            | Purpose                         |
 |-----------------------|---------------------------------|
 | React                 | Frontend application             |
@@ -70,7 +68,6 @@ A web-based ambulance dispatch and tracking application designed to improve emer
 | OpenRouteService      | Route calculation                |
 | Leaflet               | Interactive maps                 |
 | Git & GitHub          | Version control                  |
-'''
 
 ---
 
@@ -95,7 +92,7 @@ Configure the required environment variables before running the application.
 
 ## 🗺️ Main Workflow
 
-'''text
+```text
 Patient Request
       ↓
 Dispatcher Review
@@ -109,7 +106,7 @@ GPS Tracking & Navigation
 Trip Completion
       ↓
 Centralized Record
-'''
+```
 
 ---
 
