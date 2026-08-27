@@ -182,7 +182,7 @@ Current refinement focuses on responsive design, user interface improvements, re
 
 Software Development Student & Aspiring Software Developer
 
-Developed as a Final Year Project II.
+Developed as a Final Year Project.
 
 ---
 
