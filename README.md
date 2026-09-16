@@ -107,8 +107,8 @@ ambufind/
 | Leaflet          | Interactive map visualization                |
 | Vite             | Frontend development and build tooling       |
 | Git & GitHub     | Version control and project management       |
-```
 ---
+```
 
 ## 🗄️ Main System Data
 ```text
@@ -145,9 +145,9 @@ Hospital / Destination
 Trip Completed
    ↓
 Centralized Record
-```
 
 ---
+```
 
 ## ⚙️ Setup & Deployment
 
