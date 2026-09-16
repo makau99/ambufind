@@ -18,6 +18,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAmbulances from "./pages/admin/AdminAmbulances";
 import AdminRequests from "./pages/admin/AdminRequests";
 import AdminReports from "./pages/admin/AdminReports";
+import AdminAddStaff from "./pages/admin/AdminAddStaff";
 
 function App() {
   return (
@@ -151,7 +152,17 @@ function App() {
         }
 
     />
-      </Routes>
+        <Route
+            path="/admin/add-staff"
+            
+            element={
+            <ProtectedRoute 
+            role="admin">
+                <AdminAddStaff />
+            </ProtectedRoute>
+            }
+        />
+        </Routes>
     </BrowserRouter>
   );
 }

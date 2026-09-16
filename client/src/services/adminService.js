@@ -258,11 +258,9 @@ export async function updateUserRole(
 
         const allowedRoles = [
 
-            "Patient",
-            "Driver",
-            "Dispatcher",
-            "Admin"
-
+            "patient",
+            "driver",
+            "dispatcher"
         ];
 
 
@@ -1028,6 +1026,150 @@ export async function getAdminReportData() {
             error
         );
 
+
+        return {
+            data: null,
+            error
+        };
+
+    }
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| CREATE STAFF ACCOUNT
+|--------------------------------------------------------------------------
+|
+| Creates a Driver or Dispatcher account through the secure
+| Supabase Edge Function.
+|
+| No new database tables are required.
+|--------------------------------------------------------------------------
+*/
+
+export async function createStaffAccount({
+    fullName,
+    phone,
+    email,
+    password,
+    role
+}) {
+
+    try {
+
+        if (!fullName) {
+            return {
+                data: null,
+                error: new Error(
+                    "Full name is required."
+                )
+            };
+        }
+
+        if (!phone) {
+            return {
+                data: null,
+                error: new Error(
+                    "Phone number is required."
+                )
+            };
+        }
+
+        if (!email) {
+            return {
+                data: null,
+                error: new Error(
+                    "Email address is required."
+                )
+            };
+        }
+
+        if (!password) {
+            return {
+                data: null,
+                error: new Error(
+                    "Password is required."
+                )
+            };
+        }
+
+        const allowedRoles = [
+            "driver",
+            "dispatcher"
+        ];
+
+        if (!allowedRoles.includes(role)) {
+            return {
+                data: null,
+                error: new Error(
+                    "Only Driver and Dispatcher accounts can be created."
+                )
+            };
+        }
+
+
+        const {
+            data,
+            error
+        } = await supabase.functions.invoke(
+            "create-staff-account",
+            {
+                body: {
+                    fullName,
+                    phone,
+                    email,
+                    password,
+                    role
+                }
+            }
+        );
+
+
+        if (error) {
+            console.error("createStaffAccount error:", error);
+
+            if (error.context) {
+                try {
+                    const errorBody = await error.context.json();
+                    console.error("Edge Function response:", errorBody);
+                } catch (e) {
+                    console.error("Could not read Edge Function response:", e);
+                }
+            }
+
+            return {
+                data: null,
+                error
+            };
+        }
+
+
+        if (!data?.success) {
+
+            return {
+                data: null,
+                error: new Error(
+                    data?.message ||
+                    "Unable to create staff account."
+                )
+            };
+
+        }
+
+
+        return {
+            data,
+            error: null
+        };
+
+
+    } catch (error) {
+
+        console.error(
+            "createStaffAccount error:",
+            error
+        );
 
         return {
             data: null,

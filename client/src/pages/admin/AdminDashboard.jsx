@@ -178,6 +178,20 @@ export default function AdminDashboard() {
 
                     </Link>
 
+                    <Link
+                        to="/admin/add-staff"
+                        className="border rounded-xl p-5 hover:shadow-md transition"
+                    >
+
+                        <h3 className="text-lg font-semibold">
+                            Add Staff
+                        </h3>
+
+                        <p className="text-gray-600 mt-2">
+                            Create Driver and Dispatcher accounts.
+                        </p>
+
+                    </Link>
 
                     <Link
                         to="/admin/ambulances"
