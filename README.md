@@ -195,9 +195,9 @@ Current refinement focuses on responsive design, user interface improvements, re
 
 **Evans Makau**
 
-Software Development Student & Aspiring Software Developer
+Software Developer & Data Scientist
 
-Developed as a Final Year Project II.
+Developed as a Final Year Project.
 
 ---
 
